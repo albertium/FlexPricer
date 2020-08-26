@@ -1,14 +1,15 @@
+from typing import Any, Union
+
 import jax.numpy as np
 import jax.scipy as sp
 import jax as jx
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pandas as pd
 
 
 @jx.jit
 def price_bs(s: float, k: float, r: float, q: float, sig: float, t: float) -> float:
-    total_vol = sig * np.sqrt(t)
+    total_vol: Union[float, Any] = sig * np.sqrt(t)
     d1 = (np.log(s / k) + (r - q) * t) / total_vol + 0.5 * total_vol
     d2 = d1 - total_vol
     return s * np.exp(-q * t) * sp.stats.norm.cdf(d1) - k * np.exp(-r * t) * sp.stats.norm.cdf(d2)
