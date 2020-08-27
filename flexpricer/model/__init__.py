@@ -1,2 +1,3 @@
 from flexpricer.model.base_model import Model
 from flexpricer.model.black_scholes import BlackScholes
+from flexpricer.model.arithmetic_black_scholes import ArithmeticBlackScholes

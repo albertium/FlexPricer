@@ -101,14 +101,17 @@ class Pricer:
             ('volga', volga),
             ('vanna', vanna),
         ]
-        plot_lines(strikes, plots, num_cols=2)
+        plot_lines(self.instr_class.__name__, 'log-moneyness', np.log(params['spot'] / strikes), plots, num_cols=2)
 
 
-def plot_lines(axis: np.ndarray, plots: List[Tuple[str, np.ndarray]], num_cols: int = 1):
+def plot_lines(title: str, axis_title: str, axis: np.ndarray, plots: List[Tuple[str, np.ndarray]], num_cols: int = 1):
     num_rows = int(np.ceil(len(plots) / num_cols))
     titles = [plot[0] for plot in plots]
     fig = make_subplots(num_rows, num_cols, subplot_titles=titles)
     for idx, (name, data) in enumerate(plots):
-        fig.add_trace(go.Scatter(x=axis, y=data, name=name), row=idx // num_cols + 1, col=idx % num_cols + 1)
-    fig.update_layout(height=1000, width=1000)
+        row = idx // num_cols + 1
+        col = idx % num_cols + 1
+        fig.add_trace(go.Scatter(x=axis, y=data, name=name), row=row, col=col)
+        fig.update_xaxes(title_text=axis_title, row=row, col=col)
+    fig.update_layout(title={'text': f'<b>{title}</b>', 'xanchor': 'center', 'x': 0.5}, height=1000, width=1000)
     fig.show()

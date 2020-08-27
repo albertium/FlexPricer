@@ -1,2 +1,3 @@
 from flexpricer.instrument.base_instrument import Instrument
-from flexpricer.instrument.vanilla_european import VanillaEuropean
+from flexpricer.instrument.vanilla import Vanilla
+from flexpricer.instrument.digital import Digital

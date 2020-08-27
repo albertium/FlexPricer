@@ -9,9 +9,10 @@ from flexpricer.instrument.base_instrument import Instrument, ForwardActionT, Ba
 
 
 @dataclass
-class VanillaEuropean(Instrument):
+class Vanilla(Instrument):
 
     # Instrument parameters
+    smooth: float
     strike: float
     expiration: float
 
@@ -20,7 +21,8 @@ class VanillaEuropean(Instrument):
 
     def payoff(self, spot: np.ndarray) -> None:
         diff = spot - self.strike
-        self._price = np.mean(diff * (np.tanh(6 * diff) + 1)) / 2
+        constant = 6 / self.smooth
+        self._price = np.mean(diff * (np.tanh(constant * diff) + 1)) / 2
 
     def build_forward_events(self) -> Tuple[Tuple[float, ForwardActionT], ...]:
         return ((self.expiration, lambda variables: self.payoff(variables['spot'])),)
