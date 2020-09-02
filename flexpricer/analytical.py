@@ -5,7 +5,6 @@ import abc
 from typing import TypeVar, Callable, Dict, Type
 from dataclasses import dataclass, field
 import numpy as np
-from math import exp
 from scipy.stats import norm
 import scipy.integrate as integrate
 
@@ -44,8 +43,36 @@ class BlackScholesPhi(PhiGenerator):
 
     def generate(self) -> Callable[[complex], complex]:
         def phi(u: complex) -> complex:
-            # return np.exp(1j * u * (self.r - self.q) * self.t - 0.5 * u * (u + 1j) * self.sig ** 2 * self.t)
             return np.exp(- 0.5 * u * (u + 1j) * self.sig ** 2 * self.t)
+        return phi
+
+
+@dataclass
+class HestonPhi(PhiGenerator):
+
+    t: float
+    v0: float  # Beginning variance
+    vbar: float  # Long term variance level
+    kappa: float  # Reversion
+    eta: float  # vol of variance
+    rho: float  # spot-variance correlation
+
+    def generate(self) -> Callable[[complex], complex]:
+        eta2 = self.eta ** 2
+
+        def phi(u: complex) -> complex:
+            aa = -u ** 2 / 2 - 1j * u / 2
+            bb = self.kappa - self.rho * self.eta * 1j * u
+            cc = eta2 / 2
+            d = np.sqrt(bb ** 2 - 4 * aa * cc)
+            rp = (bb + d) / eta2
+            rm = (bb - d) / eta2
+            r_ratio = rm / rp
+            exp_d = np.exp(-d * self.t)
+            big_d = rm * (1 - exp_d) / (1 - r_ratio * exp_d)
+            big_c = self.kappa * (rm * self.t - 2 / eta2 * np.log((1 - r_ratio * exp_d) / (1 - r_ratio)))
+            return np.exp(big_c * self.vbar + big_d * self.v0)
+
         return phi
 
 
