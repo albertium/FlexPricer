@@ -2,7 +2,7 @@ from flexpricer.model import BlackScholes, ArithmeticBlackScholes
 from flexpricer.instrument import Vanilla, Digital
 from flexpricer.engine import Pricer
 
-from analytical import price_bs
+from analytical_example import price_bs
 
 s = 100.0
 k = 100.0

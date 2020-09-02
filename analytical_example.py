@@ -15,6 +15,13 @@ def price_bs(s: float, k: float, r: float, q: float, sig: float, t: float) -> fl
     return s * np.exp(-q * t) * sp.stats.norm.cdf(d1) - k * np.exp(-r * t) * sp.stats.norm.cdf(d2)
 
 
+def price_put(s: float, k: float, r: float, q: float, sig: float, t: float) -> float:
+    total_vol = sig * np.sqrt(t)
+    d1 = (np.log(s / k) + (r - q) * t) / total_vol + 0.5 * total_vol
+    d2 = d1 - total_vol
+    return k * np.exp(-r * t) * sp.stats.norm.cdf(-d2) - s * np.exp(-q * t) * sp.stats.norm.cdf(-d1)
+
+
 def main():
     s = 100.0
     k = 100.0
